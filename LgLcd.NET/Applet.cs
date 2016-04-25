@@ -12,13 +12,15 @@ namespace LgLcd
 
     public interface IApplet
     {
-        // Notifications that must be implemented by an applet
         void OnDeviceArrival(DeviceType deviceType);
         void OnDeviceRemoval(DeviceType deviceType);
         void OnAppletEnabled();
         void OnAppletDisabled();
         void OnCloseConnection();
-        // Called when the user wishes to configure our application from LCDMon
+
+        /// <summary>
+        /// Called when the user wishes to configure our application from LCDMon
+        /// </summary>
         void OnConfigure();
 
         void Connect(string friendlyName, bool autostartable, AppletCapabilities appletCaps);
@@ -27,7 +29,6 @@ namespace LgLcd
 
     public abstract class Applet : IApplet
     {
-        // The connection handle
         private int _handle = LgLcd.InvalidConnection;
         public int Handle { get { return _handle; } }
 
@@ -54,13 +55,11 @@ namespace LgLcd
 
         public void Connect(string friendlyName, bool autostartable, AppletCapabilities appletCaps)
         {
-            if (Connected)
-            {
-                throw new Exception("Already connected.");
-            }
+            if (Connected) throw new Exception("Already connected.");
             FriendlyName = friendlyName;
             Autostartable = autostartable;
             CapabilitiesSupported = appletCaps;
+
             var ctx = new LgLcd.ConnectContextEx
             {
                 AppFriendlyName = friendlyName,
@@ -120,22 +119,11 @@ namespace LgLcd
         {
             switch (notificationCode)
             {
-                case LgLcd.NotificationCode.DeviceArrival:
-                    OnDeviceArrival((DeviceType)notifyParam1);
-                    break;
-                case LgLcd.NotificationCode.DeviceRemoval:
-                    // All devices of the given type got disabled
-                    OnDeviceRemoval((DeviceType)notifyParam1);
-                    break;
-                case LgLcd.NotificationCode.AppletEnabled:
-                    OnAppletEnabled();
-                    break;
-                case LgLcd.NotificationCode.AppletDisabled:
-                    OnAppletDisabled();
-                    break;
-                case LgLcd.NotificationCode.CloseConnection:
-                    OnCloseConnection();
-                    break;
+                case LgLcd.NotificationCode.DeviceArrival: OnDeviceArrival((DeviceType)notifyParam1); break;
+                case LgLcd.NotificationCode.DeviceRemoval: OnDeviceRemoval((DeviceType)notifyParam1); break;
+                case LgLcd.NotificationCode.AppletEnabled: OnAppletEnabled(); break;
+                case LgLcd.NotificationCode.AppletDisabled: OnAppletDisabled(); break;
+                case LgLcd.NotificationCode.CloseConnection: OnCloseConnection(); break;
             }
             return 0;
         }

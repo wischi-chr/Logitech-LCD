@@ -36,18 +36,19 @@ namespace LgLcd
     // of a specific type attached to the system.
     public class Device
     {
-
-        // The device handle
         private int _handle = LgLcd.InvalidDevice;
         public int Handle { get { return _handle; } }
 
-        // Gets whether the device is currently opened
+        /// <summary>
+        /// Gets whether the device is currently opened
+        /// </summary>
         public bool Opened { get { return _handle != LgLcd.InvalidDevice; } }
 
-        // The type of the device
+        /// <summary>
+        /// The type of the device
+        /// </summary>
         public DeviceType Type { get; private set; }
 
-        // The bitmap format the device supports
         public int BitmapWidth { get; private set; }
         public int BitmapHeight { get; private set; }
         public int BitmapBpp { get; private set; }
@@ -186,7 +187,6 @@ namespace LgLcd
             if (!Opened) throw new Exception("Not opened.");
             var error = LgLcd.Close(Handle);
             if (error != LgLcd.ReturnValue.ErrorSuccess) throw new Win32Exception((int)error);
-            // Reset device handle
             _handle = LgLcd.InvalidDevice;
         }
 
