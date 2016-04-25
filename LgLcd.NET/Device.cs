@@ -125,20 +125,15 @@ namespace LgLcd
         public void UpdateBitmap(Bitmap bitmap, Priority priority, bool syncUpdate = false, bool syncCompleteWithinFrame = false)
         {
             if (!Opened) throw new Exception("Not opened.");
+
             if (bitmap.Width != BitmapWidth || bitmap.Height != BitmapHeight)
                 throw new ArgumentException("The bitmaps dimensions do not conform.");
 
-            var lgBitmap = new LgLcd.Bitmap
-            {
-                Format = _bitmapFormat,
-                Pixels = new byte[BitmapWidth * BitmapHeight * BitmapBpp],
-            };
-            var bitmapData = bitmap.LockBits(
-                new Rectangle(0, 0, BitmapWidth, BitmapHeight),
-                ImageLockMode.ReadOnly,
-                _pixelFormat);
+            var lgBitmap = new LgLcd.Bitmap { Format = _bitmapFormat, Pixels = new byte[BitmapWidth * BitmapHeight * BitmapBpp], };
+            var bitmapData = bitmap.LockBits(new Rectangle(0, 0, BitmapWidth, BitmapHeight), ImageLockMode.ReadOnly, _pixelFormat);
             Marshal.Copy(bitmapData.Scan0, lgBitmap.Pixels, 0, lgBitmap.Pixels.Length);
             bitmap.UnlockBits(bitmapData);
+
             var error = LgLcd.UpdateBitmap(
                 Handle,
                 lgBitmap,
